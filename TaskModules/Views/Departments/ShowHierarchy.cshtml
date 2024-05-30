@@ -1,0 +1,44 @@
+﻿@model TaskModules.Models.DeptModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Department Details</title>
+</head>
+<body>
+    <form asp-action="GetDeptHierarchy" method="post" class="mt-3">
+        <table>
+            <tr><th>Department list....</th></tr>
+            <tr>
+                <td>Departments : </td>
+                <td>
+                    <select asp-for="SelectedDeptId" class="form-select">
+                        @foreach (var department in Model.Departments)
+                        {
+                            <option value="@department.DepartmentId">@department.DepartmentName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">choose a display option :</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="radio" id="subdepts" name="disoption" value="1" />
+                    <label for="subdepts">Display sub departments</label><br />
+                    <input type="radio" id="parentdepts" name="disoption" value="2" />
+                    <label for="parentdepts">Display parent departments</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><button type="submit">Get Department</button></td>
+            </tr>
+        </table>
+    </form>
+    <div><a asp-action="Index">Back to List</a></div>
+</body>
+</html>
+

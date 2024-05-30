@@ -1,0 +1,66 @@
+﻿@model DepartmentEditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Department</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="DepartmentId" />
+            <div class="form-group">
+                <label asp-for="DepartmentName" class="control-label"></label>
+                <input asp-for="DepartmentName" class="form-control" />
+                <span asp-validation-for="DepartmentName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DepartmentLogo" class="control-label"></label>&nbsp;
+                <input asp-for="DepartmentLogo" type="hidden" id="DepartmentLogo" />
+                <img src="~/@Url.Content(Model.DepartmentLogo)" width="20" height="20" alt="Logo"/>
+                <p>To change logo upload new image. File size max 5 MB </p>
+                <input asp-for="DepartmentLogoFile" type="file" accept=".jpg, .png" name="DepartmentLogoFile" class="form-control" />
+                <span asp-validation-for="DepartmentLogoFile" class="text-danger"></span>
+            </div>
+            @{
+                if (ViewBag.IsRootDept == true)
+                {
+                    <div class="form-group">
+                        <label asp-for="ParentDeptId" class="control-label"></label>
+                        Root Department
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label asp-for="ParentDeptId" class="control-label"></label>
+                        <select asp-for="ParentDeptId" class="form-control">
+                            @foreach (var department in Model.AvailableDepartments)
+                            {
+                                <option value="@department.Value">@department.Text</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ParentDeptId" class="text-danger"></span>
+                    </div>
+                }
+            }           
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

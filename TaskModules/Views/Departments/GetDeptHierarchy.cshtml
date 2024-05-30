@@ -1,0 +1,86 @@
+﻿@model List<Department>
+
+@{
+    ViewData["Title"] = "Department List";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Department Details</title>
+     <style type="text/css">
+        #list {
+            color: green;
+            background: white;
+            font-size:inherit;
+        }
+        li {
+            list-style: none; /* Removes default bullet style */
+        }
+        li::before {
+            /* Unicode for right-pointing arrow (») */
+            content: "\00BB";
+        }
+    </style>
+</head>
+<body>
+    @if (Model != null && Model.Any())
+    {
+        <p><b>You have chosen: @Model.First().DepartmentName</b></p>
+
+        @if (ViewBag.disOption == 1)
+        {
+            RenderSubDepartments(Model.First());
+        }
+        else if (ViewBag.disOption == 2)
+        {
+            RenderParentDepartments(Model.First());
+        }
+    }
+    else
+    {
+        <p>No departments found.</p>
+    }
+
+    <div><a asp-action="ShowHierarchy">Back to Show Hierarchy</a></div>
+
+    @functions {
+        public void RenderSubDepartments(Department department)
+        {
+            if (department.SubDepartments != null && department.SubDepartments.Any())
+            {
+                <p><b>Sub departments :</b></p>
+                <ul id="list">
+                    @foreach (var subDept in department.SubDepartments)
+                    {
+                        <li>@subDept.DepartmentName</li>
+                        RenderSubDepartments(subDept);
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No Sub departments for @department.DepartmentName</p>
+            }
+        }
+
+        public void RenderParentDepartments(Department department)
+        {
+            if (department.ParentDept != null)
+            {
+                <p><b>Parent departments :</b></p>
+                <ul id="list">
+                    <li>@department.ParentDept.DepartmentName</li>
+                    @{
+                        RenderParentDepartments(department.ParentDept);
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No parent department for @department.DepartmentName</p>
+            }
+        }
+    }
+</body>
+</html>

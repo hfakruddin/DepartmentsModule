@@ -1,0 +1,47 @@
+﻿@model IEnumerable<TaskModules.Entities.Models.Department>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete all departments?");
+    }
+</script>
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a> | 
+    <a asp-action="ShowHierarchy">Show department hierarchy</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DepartmentName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ParentDept)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img src="@Url.Content(item.DepartmentLogo)" width="20" height="20" alt="Logo"/>
+                @Html.DisplayFor(modelItem => item.DepartmentName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParentDept.DepartmentName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.DepartmentId">Edit</a> |                
+                <a asp-action="Delete" asp-route-id="@item.DepartmentId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

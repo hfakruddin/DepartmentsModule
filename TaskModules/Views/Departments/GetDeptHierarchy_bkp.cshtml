@@ -1,0 +1,99 @@
+﻿@model List<Department>
+
+@{
+    ViewData["Title"] = "Department List";
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Department Details</title>
+
+</head>
+<body>
+
+
+    @if (ViewBag.disOption == 1)
+    {
+
+        bool hasSubDepartments = Model.Any(d => d.SubDepartments.Count > 0);
+        if (hasSubDepartments)
+        {
+            <p><b>You have chosen: @ViewBag.SelectedDeptName</b></p>
+            <p>It's <b>Sub departments :</b></p>
+            <ul>
+                @foreach (var subDept in Model)
+                {
+                    <li>@subDept.DepartmentName</li>
+
+                    RenderSubDepartments(subDept);
+                    break;
+                }
+            </ul>
+        }
+        else
+        {
+            <p><b>No Sub departments for @ViewBag.SelectedDeptName </b></p>
+        }
+
+    }
+    else if (ViewBag.disOption == 2)
+    {
+
+        bool hasParentDepartments = Model.Any(d => d.ParentDeptID != null);
+
+        if (hasParentDepartments)
+        {
+            <p><b>You have chosen: @ViewBag.SelectedDeptName</b></p>
+            <p><b>Parent departments :</b></p>
+            foreach (var department in Model.Where(d => d.ParentDeptID != null))
+            {
+                RenderParentDepartments(department);
+                break; // This will exit the loop after the first iteration
+            }
+        }
+        else
+        {
+            <p>No parent department for @ViewBag.SelectedDeptName</p>
+        }
+    }
+
+    @functions {
+        public void RenderSubDepartments(TaskModules.Entities.Models.Department department)
+        {
+            if (department != null && department.SubDepartments != null)
+            {
+                if (department.SubDepartments.Any())
+                {
+                    <ul>
+                        @foreach (var subDept in department.SubDepartments)
+                        {
+                            <li>@subDept.DepartmentName</li>
+                            RenderSubDepartments(subDept);
+                        }
+                    </ul>
+                }
+            }
+        }
+
+        public void RenderParentDepartments(Department department)
+        {
+            <li>@department.DepartmentName</li>
+            if (department.ParentDept != null)
+            {
+                <ul>
+                    @{
+                        RenderParentDepartments(department.ParentDept);
+                    }
+                </ul>
+            }
+        }
+    }
+
+    <div><a asp-action="ShowHierarchy">Back to Show Hierarchy</a></div>
+
+</body>
+</html>
+
